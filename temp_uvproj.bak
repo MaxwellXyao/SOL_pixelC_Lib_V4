@@ -411,6 +411,11 @@
               <FilePath>.\pixelC_hardware\pixelC_HW_Key.c</FilePath>
             </File>
             <File>
+              <FileName>pixelC_HW_Port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\pixelC_hardware\pixelC_HW_Port.c</FilePath>
+            </File>
+            <File>
               <FileName>pixelC_HW_SDcard.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\pixelC_hardware\pixelC_HW_SDcard.c</FilePath>
@@ -537,6 +542,18 @@
         </Group>
         <Group>
           <GroupName>lib</GroupName>
+          <Files>
+            <File>
+              <FileName>stm32f10x_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\lib\src\stm32f10x_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_rcc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\lib\src\stm32f10x_rcc.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>start</GroupName>
