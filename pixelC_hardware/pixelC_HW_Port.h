@@ -46,7 +46,8 @@ PBout(n)=0;
 value1=PAin(n);
 value2=PBin(n);
 ----------------------------------------------------*/
-u16 pixelC_HW_Port_getADC(PIN_PXx PXx);	//获取引脚AD值
+u16 pixelC_HW_Port_getADC(PIN_PXx PXx);		//获取引脚AD值
+void pixelC_HW_Port_setPWM(PIN_PXx PXx,u16 ccr,u16 arr,u16 psc,u8 pwm_on);	//设置PWM值
 
 
 
