@@ -4,18 +4,18 @@
 
 //###########################°æ∂®“Â°ø##############################
 
-static u8 Is_Key_R_Down(void)	{ 	return PBin(8); 	}
-static u8 Is_Key_D_Down(void)	{ 	return PBin(9); 	}
-static u8 Is_Key_L_Down(void)	{ 	return PBin(5); 	}
-static u8 Is_Key_OK_Down(void)	{ 	return PBin(6); 	}
-static u8 Is_Key_U_Down(void)	{ 	return PBin(7); 	}
+static u8 Is_Key_R_Down(void)	{ 	return PBin(Key_R_Pin); 	}
+static u8 Is_Key_D_Down(void)	{ 	return PBin(Key_D_Pin); 	}
+static u8 Is_Key_L_Down(void)	{ 	return PBin(Key_L_Pin); 	}
+static u8 Is_Key_OK_Down(void)	{ 	return PBin(Key_OK_Pin); 	}
+static u8 Is_Key_U_Down(void)	{ 	return PBin(Key_U_Pin); 	}
 
-static u8 Is_Key_BK_Down(void)	{ 	return PAin(13); 	}
-static u8 Is_Key_A_Down(void)	{ 	return PBin(3); 	}
-static u8 Is_Key_B_Down(void)	{ 	return PBin(4); 	}
+static u8 Is_Key_BK_Down(void)	{ 	return PAin(Key_BK_Pin); 	}
+static u8 Is_Key_A_Down(void)	{ 	return PBin(Key_A_Pin); 	}
+static u8 Is_Key_B_Down(void)	{ 	return PBin(Key_B_Pin); 	}
 
-static u8 Is_Key_1_Down(void)	{ 	return PAin(14); 	}
-static u8 Is_Key_2_Down(void)	{ 	return PAin(15); 	}
+static u8 Is_Key_1_Down(void)	{ 	return PAin(Switch_1_Pin); 	}
+static u8 Is_Key_2_Down(void)	{ 	return PAin(Switch_2_Pin); 	}
 
 KEY_T _Key_R={Is_Key_R_Down,0,0,0,KEY_R_S,KEY_R_L};
 KEY_T _Key_D={Is_Key_D_Down,0,0,0,KEY_D_S,KEY_D_L};
