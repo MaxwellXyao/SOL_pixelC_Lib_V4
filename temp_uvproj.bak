@@ -542,18 +542,6 @@
         </Group>
         <Group>
           <GroupName>lib</GroupName>
-          <Files>
-            <File>
-              <FileName>stm32f10x_adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\lib\src\stm32f10x_adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_rcc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\lib\src\stm32f10x_rcc.c</FilePath>
-            </File>
-          </Files>
         </Group>
         <Group>
           <GroupName>start</GroupName>
