@@ -25,7 +25,7 @@ PS:	STM32F103C8T6	[	ROM:64k,RAM:20k		]
 
 //############################【加载库】############################
 #include"stm32f10x_lib.h"
-#include <stdio.h>
+#include<stdio.h>
 #include<stdarg.h> 						//支持变长参数
 
 //------------------【system】

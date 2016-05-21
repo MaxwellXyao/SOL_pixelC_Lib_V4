@@ -1,11 +1,7 @@
 #include"pixelC_Hardware_include.h"
 
-//##############################【测试页面】##############################
-
-
-
 //##############################【主函数】##############################
-extern MENU_PAGE index;	//在menu.c中编写页面
+extern MENU_PAGE index;	//在menu.c中编写页面函数
 
 int main()
 {
@@ -13,8 +9,8 @@ int main()
 	Stm32_Clock_Init();					//系统时钟初始化
 	delay_init(72);						//72MHz内部频率
 
-	pixelC_HW_Key_Init();
-	SOLGUI_Init(&index);
+	pixelC_HW_Key_Init();				//按键初始化
+	SOLGUI_Init(&index);				//SOLGUI初始化
 
 	
 	while(1)
