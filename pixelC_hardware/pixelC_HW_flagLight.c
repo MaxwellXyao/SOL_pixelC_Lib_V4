@@ -10,17 +10,17 @@ void pixelC_HW_flagLight_Init(void)
 		FLAGLIGHT_GPIOx->CRL&=~((u32)0xf<<((FLAGLIGHT_Pin%8)*4));
 		FLAGLIGHT_GPIOx->CRL|=(u32)0x3<<((FLAGLIGHT_Pin%8)*4);
 #endif
-	PAout(FLAGLIGHT_Pin)=1;	
+	PAout(8)=1;	
 }
 
 void pixelC_HW_flagLight_On(void)
 {
-	PAout(FLAGLIGHT_Pin)=0;
+	PAout(8)=0;
 }
 
 void pixelC_HW_flagLight_Off(void)
 {
-	PAout(FLAGLIGHT_Pin)=1;
+	PAout(8)=1;
 }
 
 void pixelC_HW_flagLight_Twinkle(void)

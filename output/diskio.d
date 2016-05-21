@@ -30,9 +30,12 @@
 .\output\diskio.o: .\lib\inc\stm32f10x_tim.h
 .\output\diskio.o: .\lib\inc\stm32f10x_usart.h
 .\output\diskio.o: .\lib\inc\stm32f10x_wwdg.h
+.\output\diskio.o: F:\STM32\keil mdk\MDK\ARM\RV31\INC\stdio.h
+.\output\diskio.o: F:\STM32\keil mdk\MDK\ARM\RV31\INC\stdarg.h
 .\output\diskio.o: .\SYSTEM\system.h
 .\output\diskio.o: .\SYSTEM\delay.h
 .\output\diskio.o: .\SYSTEM\malloc.h
+.\output\diskio.o: .\SYSTEM\Usart.h
 .\output\diskio.o: .\pixelC_hardware\pixelC_HW_flagLight.h
 .\output\diskio.o: .\pixelC_hardware\pixelC_HW_Key.h
 .\output\diskio.o: .\pixelC_hardware\pixelC_HW_OLED.h
@@ -45,7 +48,6 @@
 .\output\diskio.o: .\SOLGUI\SOLGUI_Common.h
 .\output\diskio.o: .\SOLGUI\SOLGUI_Menu.h
 .\output\diskio.o: .\SOLGUI\SOLGUI_Printf.h
-.\output\diskio.o: F:\STM32\keil mdk\MDK\ARM\RV31\INC\stdarg.h
 .\output\diskio.o: .\SOLGUI\SOLGUI_GBasic.h
 .\output\diskio.o: .\SOLGUI\SOLGUI_Picture.h
 .\output\diskio.o: .\SOLGUI\SOLGUI_Widget.h

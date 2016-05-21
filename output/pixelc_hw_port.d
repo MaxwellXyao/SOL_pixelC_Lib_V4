@@ -28,9 +28,12 @@
 .\output\pixelc_hw_port.o: .\lib\inc\stm32f10x_tim.h
 .\output\pixelc_hw_port.o: .\lib\inc\stm32f10x_usart.h
 .\output\pixelc_hw_port.o: .\lib\inc\stm32f10x_wwdg.h
+.\output\pixelc_hw_port.o: F:\STM32\keil mdk\MDK\ARM\RV31\INC\stdio.h
+.\output\pixelc_hw_port.o: F:\STM32\keil mdk\MDK\ARM\RV31\INC\stdarg.h
 .\output\pixelc_hw_port.o: .\SYSTEM\system.h
 .\output\pixelc_hw_port.o: .\SYSTEM\delay.h
 .\output\pixelc_hw_port.o: .\SYSTEM\malloc.h
+.\output\pixelc_hw_port.o: .\SYSTEM\Usart.h
 .\output\pixelc_hw_port.o: pixelC_hardware\pixelC_HW_flagLight.h
 .\output\pixelc_hw_port.o: pixelC_hardware\pixelC_HW_Key.h
 .\output\pixelc_hw_port.o: pixelC_hardware\pixelC_HW_OLED.h
@@ -43,7 +46,6 @@
 .\output\pixelc_hw_port.o: .\SOLGUI\SOLGUI_Common.h
 .\output\pixelc_hw_port.o: .\SOLGUI\SOLGUI_Menu.h
 .\output\pixelc_hw_port.o: .\SOLGUI\SOLGUI_Printf.h
-.\output\pixelc_hw_port.o: F:\STM32\keil mdk\MDK\ARM\RV31\INC\stdarg.h
 .\output\pixelc_hw_port.o: .\SOLGUI\SOLGUI_GBasic.h
 .\output\pixelc_hw_port.o: .\SOLGUI\SOLGUI_Picture.h
 .\output\pixelc_hw_port.o: .\SOLGUI\SOLGUI_Widget.h

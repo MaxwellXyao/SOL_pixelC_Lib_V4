@@ -75,8 +75,8 @@ void KeyRead(KEY_T *key);
 #define KEY_B_L 	0x81	//B键长按
 
 //##############################【API】##############################
-void pixelC_HW_Key_Init(void);				//按键扫描初始化
+void pixelC_HW_Key_Init(void);						//按键扫描初始化
 u8 pixelC_HW_Key_GetValue(void);			//方向键及功能键获取键值【非阻塞，必须被周期性的调用(主函数或定时器)】
-u8 pixelC_HW_Switch_GetValue(void);			//拨码开关获取键值（0~3：switch_1*2+switch_2）【非阻塞，必须被周期性的调用(主函数或定时器)】
+u8 pixelC_HW_Switch_GetValue(void);		//拨码开关获取键值（0~3：switch_1*2+switch_2）【非阻塞，必须被周期性的调用(主函数或定时器)】
 
 #endif

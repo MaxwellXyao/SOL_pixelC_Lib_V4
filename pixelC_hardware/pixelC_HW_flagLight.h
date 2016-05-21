@@ -10,11 +10,11 @@
 #define TEINKLE_WIDTH 10 //…¡À∏≥÷–¯ ±º‰ms
 
 //###############################°æAPI°ø####################################
-void pixelC_HW_flagLight_Init(void);		//∞Â‘ÿ–≈∫≈µ∆≥ı ºªØ,PA.8
+void pixelC_HW_flagLight_Init(void);		//∞Â‘ÿ–≈∫≈µ∆≥ı ºªØ,PA.8(TIM1_CH1)
 
 void pixelC_HW_flagLight_On(void);			//∞Â‘ÿ–≈∫≈µ∆¡¡
 void pixelC_HW_flagLight_Off(void);			//∞Â‘ÿ–≈∫≈µ∆√
-void pixelC_HW_flagLight_Twinkle(void);		//∞Â‘ÿ–≈∫≈µ∆…¡À∏“ª¥Œ
+void pixelC_HW_flagLight_Twinkle(void);		//∞Â‘ÿ–≈∫≈µ∆…¡À∏
 
 #endif
 

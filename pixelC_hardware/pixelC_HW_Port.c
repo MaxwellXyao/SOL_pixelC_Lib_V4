@@ -69,7 +69,7 @@ static void Port_PinInit_PWM(PIN_PXx PXx)
 	Port_PinInit_GPIO(PXx,0xB);	//复用输出（该寄存器置B）	  
 	RCC->APB1ENR|=1<<0; 	//TIM2时钟使能 
 
-	if(bit_getL4((int)PXx)/2){
+	if((bit_getL4((int)PXx)/2)==0){
 		TIM2->CCMR1|=7<<((bit_getL4((int)PXx)%2)*8+4);  	//CH1,CH2 PWM2模式
 		TIM2->CCMR1|=1<<((bit_getL4((int)PXx)%2)*8+3); 		//CH1,CH2 预装载使能
 	}
@@ -95,8 +95,6 @@ void pixelC_HW_Port_PinInit(PIN_PXx PXx,PIN_MODE mode)
 	}	
 }
 
-
-
 u16 pixelC_HW_Port_getADC(PIN_PXx PXx)   
 {	   
 	ADC1->SQR3&=0XFFFFFFE0;//规则序列1 通道ch
@@ -116,17 +114,118 @@ void pixelC_HW_Port_setPWM(PIN_PXx PXx,u16 ccr,u16 arr,u16 psc,u8 pwm_on)
 		case 1:TIM2->CCR2=ccr;break;
 		case 2:TIM2->CCR3=ccr;break;
 		case 3:TIM2->CCR4=ccr;break;
-		default:return;
+		default:;
 	}
 	TIM2->CCER|=((u32)pwm_on)<<((bit_getL4((int)PXx)*4));   	//OC1 输出使能			 
 }
 
+//-------------------------【协议快速操作】
+//-----------【SPI】
 
 
+//SPI2速度设置函数
+//SpeedSet:0~7
+//SPI速度=fAPB1/2^(SpeedSet+1)
+//APB1时钟一般为36Mhz
+void Port_SPI2_SetSpeed(u8 SpeedSet)
+{
+	SpeedSet&=0X07;			//限制范围
+	SPI2->CR1&=0XFFC7; 
+	SPI2->CR1|=SpeedSet<<3;	//设置SPI2速度  
+	SPI2->CR1|=1<<6; 		//SPI设备使能	  
+} 
+
+//SPI2 读写一个字节
+//TxData:要写入的字节
+//返回值:读取到的字节
+u8 Port_SPI2_ReadWriteByte(u8 TxData)
+{		
+	u16 retry=0;				 
+	while((SPI2->SR&1<<1)==0)		//等待发送区空	
+	{
+		retry++;
+		if(retry>=0XFFFE)return 0; 	//超时退出
+	}			  
+	SPI2->DR=TxData;	 	  		//发送一个byte 
+	retry=0;
+	while((SPI2->SR&1<<0)==0) 		//等待接收完一个byte  
+	{
+		retry++;
+		if(retry>=0XFFFE)return 0;	//超时退出
+	}	  						    
+	return SPI2->DR;          		//返回收到的数据				    
+}
+
+void pixelC_HW_Port_SPI2_Init(void)	   //使用SPI2口
+{
+	RCC->APB2ENR|=1<<3;  	//PORTB时钟使能 	 
+	RCC->APB1ENR|=1<<14;   	//SPI2时钟使能 
+	//这里只针对SPI口初始化
+	GPIOB->CRH&=0X000FFFFF; 
+	GPIOB->CRH|=0XBBB00000;	//PB13/14/15复用 	    
+	GPIOB->ODR|=0X7<<13;   	//PB13/14/15上拉
+	SPI2->CR1|=0<<10;		//全双工模式	
+	SPI2->CR1|=1<<9; 		//软件nss管理
+	SPI2->CR1|=1<<8;  
+
+	SPI2->CR1|=1<<2; 		//SPI主机
+	SPI2->CR1|=0<<11;		//8bit数据格式	
+	SPI2->CR1|=1<<1; 		//空闲模式下SCK为1 CPOL=1
+	SPI2->CR1|=1<<0; 		//数据采样从第二个时间边沿开始,CPHA=1  
+	//对SPI2属于APB1的外设.时钟频率最大为36M.
+	SPI2->CR1|=3<<3; 		//Fsck=Fpclk1/256
+	SPI2->CR1|=0<<7; 		//MSBfirst   
+	SPI2->CR1|=1<<6; 		//SPI设备使能
+	Port_SPI2_ReadWriteByte(0xff);//启动传输			
+}
+
+//-----------【USART】
 
 
+static void _myfputc(char ch)
+{
+	while((USART2->SR&0X40)==0);//循环发送,直到发送完毕   
+	USART2->DR = (u8) ch;      
+}
 
+void USART2_printf(const char* str,...)
+{
+	va_list arp;
+	va_start(arp,str);								//变长参数栈始点在str
+	_myprintf(_myfputc,str,arp);
+	va_end(arp);
+}
 
+void pixelC_HW_Port_USART2_Init(u32 bound,u8 en_rx)	//串口2初始化
+{
+	float temp;
+	u16 mantissa;
+	u16 fraction;	   
+	temp=(float)(72000000)/(bound*32);//得到USARTDIV，注意：串口2的时钟是串口1的一半！！！
+	mantissa=temp;				 //得到整数部分
+	fraction=(temp-mantissa)*16; //得到小数部分	 
+    mantissa<<=4;
+	mantissa+=fraction; 
+
+	RCC->APB2ENR|=1<<2;   //使能PORTA口时钟  
+	RCC->APB1ENR|=1<<17;  //使能串口2时钟
+	 
+	GPIOA->CRL&=0XFFFF00FF; 
+	GPIOA->CRL|=0X00008B00;//IO状态设置
+		  
+	RCC->APB1RSTR|=1<<17;   //复位串口1
+	RCC->APB1RSTR&=~(1<<17);//停止复位	   	   
+	//波特率设置
+ 	USART2->BRR=mantissa; // 波特率设置	 
+	USART2->CR1|=0X200C;  //1位停止,无校验位.
+	if(en_rx==1)
+	{
+		//使能接收中断
+		USART2->CR1|=1<<8;    //PE中断使能
+		USART2->CR1|=1<<5;    //接收缓冲区非空中断使能	    	
+		System_NVIC_Init(3,3,USART2_IRQChannel,2);//组2，最低优先级 
+	}
+}
 
 
 
