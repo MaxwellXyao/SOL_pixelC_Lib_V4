@@ -1,110 +1,15 @@
-#include"SOLGUI_Include.h"
-#include<stdarg.h> 						//Ö§³Ö±ä³¤²ÎÊý
+#include"Usart.h"
 
-//########################¡¾×Ö¿âÎÄ¼þ¡¿########################
-#include"Font6x8_ASCII.h"
-#include"Font4x6_ASCII.h"
-#include"Font8x8_ASCII.h"
-#include"Font8x10_ASCII.h"
 
-//########################¡¾×Ö¿âÑ¡Ôñ¡¿########################
-//---------------------¡¾×Ö¿â×¢²á¡¿
-
-FontInfo _fontInfo_6x8={0x01,6,8,(u8*)_Font6x8};	   	//Font6x8_ASCII
-
-#if FONT4X6_EN==1
-FontInfo _fontInfo_4x6={0x02,4,6,(u8*)_Font4x6};		//Font4x6_ASCII
-#endif
-#if FONT8X8_EN==1
-FontInfo _fontInfo_8x8={0x04,8,8,(u8*)_Font8x8};	   	//Font8x8_ASCII
-#endif
-#if FONT8X10_EN==1
-FontInfo _fontInfo_8x10={0x08,8,10,(u8*)_Font8x10};	   	//Font8x10_ASCII
-#endif
-
-//---------------------¡¾×Ö¿âÑ¡ÔñÆ÷¡¿
-FontInfo SOLGUI_SwitchFont(u8 mode)
+void _myprintf(void (*myputc)(char),const char* str,va_list arp)		//×ÔÖÆprintfµ×²ã
 {
-	switch(mode)
-	{
-		case F6X8:
-		case 0:
-		case R6X8:	return(_fontInfo_6x8);
-#if FONT4X6_EN==1
-		case F4X6:
-		case R4X6:	return(_fontInfo_4x6);
-#endif
-#if FONT8X8_EN==1
-		case F8X8:
-		case R8X8:	return(_fontInfo_8x8);
-#endif
-#if FONT8X10_EN==1
-		case F8X10:
-		case R8X10:	return(_fontInfo_8x10);
-#endif
-		default: 	return(_fontInfo_6x8);
-	}
-}
-
-
-//########################¡¾ÄÚ²¿Ê¹ÓÃ¡¿########################
-//----------------¡¾ÔÚÆÁÄ»ÉÏÊä³ö×Ö·û¡¿
-void SOLGUI_PutChar(u32 x,u32 y,u8 ch,u8 mode)//ÏÔÊ¾µ¥¸ö×Ö·û£¨mode£º1Õý³£ÏÔÊ¾£¬0¸ßÁÁÏÔÊ¾£©
-{
-	u8 temp,m=1,tl,x0=x;
-	s8 t;
-	FontInfo fi=SOLGUI_SwitchFont(mode);
-	m=mode&fi.FontMask;
-//-------------¡¾×Ö·ûÏÔÊ¾¡¿  
-	ch=ch-' ';
-	for(t=fi.FontHeight-1;t>=0;t--)								
-	{	
-		 temp=*(fi.Fontp+ch*fi.FontHeight+t);
-		 for(tl=0;tl<8;tl++)
-		 {
-		 	if(temp&0x80) SOLGUI_DrawPoint(x,y,m);
-			else SOLGUI_DrawPoint(x,y,!m);
-			temp<<=1;
-			x++;
-			if((x-x0)==8)
-			{ 
-				x=x0;
-				y++;
-				break;
-			}
-		 }
-	}
-}
-
-//----------------¡¾ÔÚÆÁÄ»ÉÏÊä³ö×Ö·û´®¡¿
-
-void SOLGUI_PutString(u32 x,u32 y,const u8 *str,u8 mode)	//ÏÔÊ¾×Ö·û´®£¨mode£º1Õý³£ÏÔÊ¾£¬0¸ßÁÁÏÔÊ¾£©
-{
-	u8 j=0;
-	FontInfo fi=SOLGUI_SwitchFont(mode);
-//-------------¡¾×Ö¿âÑ¡Ôñ¡¿
-	while (str[j]!='\0')
-	{		
-		SOLGUI_PutChar(x,y,str[j],mode);
-		x+=fi.FontWidth;										
-		j++;
-	}
-}
-
-
-//##############################¡¾API¡¿##############################
-
-void __SOLGUI_printf(u32 x,u32 y,u8 mode,const u8* str,va_list arp)		//SOLGUIÄÚ²¿Ê¹ÓÃµÄÆÁÄ»printfµ×²ã
-{
-	u8 xpp=x;
-	u8 f,r,fl=0,l=3,lt;		//Ä¬ÈÏÁô3Î»Ð¡Êý,Ð¡Êý¿ÉÁô0~7Î»
-	u8 i,j,w,lp;
-	u32 v;
-	s8 c, d, s[16], *p;
-	s16 res, chc, cc,ll;
-	s16 kh,kl,pow=1;
+	unsigned char f,r,fl=0,l=3,lt,jj;		//Ä¬ÈÏÁô3Î»Ð¡Êý,Ð¡Êý¿ÉÁô0~7Î»
+	unsigned char i,j,w,lp;
+	unsigned long v;
+	char c, d, s[16], *p;
+	int res, chc, cc,ll;
+	int kh,kl,pow=1;																
 	double k;
-	FontInfo fi=SOLGUI_SwitchFont(mode);
 
 	for (cc=res=0;cc!=-1;res+=cc) 		   			//½âÎö¸ñÊ½»¯×Ö·û´®£¬ÇÒÊä³ö
 	{
@@ -113,9 +18,7 @@ void __SOLGUI_printf(u32 x,u32 y,u8 mode,const u8* str,va_list arp)		//SOLGUIÄÚ²
 		if (c == 0) break;					
 //---------------------------------//¶ÁÈ¡µ½·Ç'%'·ûºÅÊ±
 		if (c != '%') {						
-			//cc = f_putc(c, fil);		   			//Õý³£Êä³ö×Ö·û
-			SOLGUI_PutChar(xpp,y,c,mode);
-			xpp+=fi.FontWidth;									
+			myputc(c);									
 			continue;
 		}
 //---------------------------------//¶ÁÈ¡µ½'%'·ûºÅÊ±
@@ -154,36 +57,37 @@ void __SOLGUI_printf(u32 x,u32 y,u8 mode,const u8* str,va_list arp)		//SOLGUIÄÚ²
 		switch (d) {								//·ÖÀà%*µÄÇé¿ö
 
 		case 'S' :					/* String */
-			p = va_arg(arp,s8*);					//È¡×Ö·û´®±äÁ¿
+			p = va_arg(arp,char*);					//È¡×Ö·û´®±äÁ¿
 			for(j=0;p[j];j++);						//³¤¶È¼ÆËã
 			ll=j;
 			chc = 0;
 			if (!(f&2)) {							//²»ÓÃ×ó¶ÔÆë£¬×ó±ß¾ÍÒª²¹¿Õ¸ñ%06s
 				while (j++ < w) 
 				{
-					SOLGUI_PutChar(xpp,y,' ',mode);
-					chc+=1;
-					xpp+=fi.FontWidth;						
+					myputc(' ');
+					chc+=1;					
 				}
 			}
-			SOLGUI_PutString(xpp,y,(unsigned char *)p,mode);
-			xpp=xpp+fi.FontWidth*ll;						
+
+			jj=0;	
+			while (p[jj]!='\0')
+			{		
+				myputc(p[jj]);										
+				jj++;
+			}
+											
 			chc+=ll;
 			while (j++ < w) 						//×ó¶ÔÆë£¬×ó±ß¾Í²»ÓÃ¿Õ¸ñ£¬ÓÒ±ßÌî¿Õ¸ñ%-06s
 			{
-				SOLGUI_PutChar(xpp,y,' ',mode);
-				chc+=1;
-				xpp+=fi.FontWidth;						
+				myputc(' ');
+				chc+=1;						
 			}	 
 			cc = chc;
 			continue;
 
 		case 'C' :
 		{					/* Character */
-		//	cc = f_putc((TCHAR)va_arg(arp, int), fil); continue;
-			SOLGUI_PutChar(xpp,y,(char)va_arg(arp,int),mode);
-			xpp+=fi.FontWidth;								
-			continue;
+			myputc((char)va_arg(arp,int));	continue;
 		}
 
 		case 'F' :											//Ä¬ÈÏ±£Áô3Î»Ð¡Êý
@@ -233,8 +137,7 @@ void __SOLGUI_printf(u32 x,u32 y,u8 mode,const u8* str,va_list arp)		//SOLGUIÄÚ²
 		case 'X' :					/* Hexdecimal */
 			r = 16; break;
 		default:{					/* Unknown type (pass-through) */
-				SOLGUI_PutChar(xpp,y,c,mode);
-				xpp+=fi.FontWidth;								
+				myputc(c);								
 				cc=1;
 				continue;
 			}
@@ -260,34 +163,37 @@ PRT:
 		d=(f&1)?'0':' ';									//ÅÐ¶Ï0Ìî³ä»¹ÊÇ×ó¶ÔÆë
 		while (!(f&2)&&j++<w)
 		{
-			//res+=(cc = f_putc(d, fil));	//²»ÓÃ×ó¶ÔÆë£¬×ó±ß¾ÍÒª²¹0»ò¿Õ¸ñ
-			SOLGUI_PutChar(xpp,y,d,mode);
-			xpp+=fi.FontWidth;									
+			myputc(d);									
 		}
 		do 
 		{
-			//res += (cc = f_putc(s[--i], fil)); 
-			SOLGUI_PutChar(xpp,y,s[--i],mode);
-			xpp+=fi.FontWidth;									
+			myputc(s[--i]);									
 		}while(i);
 
 		while (j++ < w) 
 		{
-			//res += (cc = f_putc(' ', fil));		//ÓÒ±ß²¹¿Õ¸ñ
-			SOLGUI_PutChar(xpp,y,d,mode);
-			xpp+=fi.FontWidth;										
+			myputc(d);										
 		}
 	}
 }
 
 
-//----------------¡¾ÔÚÆÁÄ»ÉÏ¸ñÊ½»¯Êä³ö×Ö·û´®¡¿
-void SOLGUI_printf(u32 x,u32 y,u8 mode,const u8* str,...)			//Íâ²¿Ê¹ÓÃµÄAPI°æprintfº¯Êý
-{
-	va_list arp;
-	va_start(arp,str);								//±ä³¤²ÎÊýÕ»Ê¼µãÔÚstr
-	__SOLGUI_printf(x,y,mode,str,arp);				//µ÷ÓÃµ×²ã
-	va_end(arp);
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
